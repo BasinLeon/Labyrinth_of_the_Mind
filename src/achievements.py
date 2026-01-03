@@ -158,6 +158,52 @@ ACHIEVEMENTS: list[Achievement] = [
         condition=lambda s: "shadow_accepted" in s.visited_rooms and "light_accepted" in s.visited_rooms,
         secret=True,
     ),
+    
+    # New room achievements
+    Achievement(
+        id="time_traveler",
+        name="Time Traveler",
+        description="Flow with the River of Time",
+        icon="⏳",
+        condition=lambda s: "flowing_present" in s.visited_rooms,
+    ),
+    Achievement(
+        id="soul_forge",
+        name="Soul Forge",
+        description="Create something in the Forge of Creation",
+        icon="🔥",
+        condition=lambda s: "creation_complete" in s.visited_rooms,
+    ),
+    Achievement(
+        id="silent_sage",
+        name="Silent Sage",
+        description="Find your inner voice in the Temple of Silence",
+        icon="🧘",
+        condition=lambda s: "inner_voice" in s.visited_rooms,
+    ),
+    Achievement(
+        id="grateful_heart",
+        name="Grateful Heart",
+        description="Offer gratitude in the Chamber of Gratitude",
+        icon="💝",
+        condition=lambda s: "gratitude_offered" in s.visited_rooms,
+    ),
+    Achievement(
+        id="dreamer_awakened",
+        name="Dreamer Awakened",
+        description="Confront your abandoned dreams",
+        icon="💫",
+        condition=lambda s: "abandoned_dreams" in s.visited_rooms,
+        secret=True,
+    ),
+    Achievement(
+        id="echo_breaker",
+        name="Echo Breaker",
+        description="Break and then find silence",
+        icon="🔇",
+        condition=lambda s: "echoing_words" in s.visited_rooms and "inner_voice" in s.visited_rooms,
+        secret=True,
+    ),
 ]
 
 
