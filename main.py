@@ -1,7 +1,7 @@
-#!/usr/bin/env python3
-"""Main entry point for Labyrinth of the Mind."""
+"""Main entry point for Labyrinth of the Mind - Streamlit Web App."""
 
-from src.engine import main
+# This file is the entry point for Streamlit Cloud.
+# It imports and runs the full Streamlit application.
 
-if __name__ == "__main__":
-    main()
+# Import the entire streamlit_app module to run the Streamlit interface
+exec(open("streamlit_app.py").read())
