@@ -12,6 +12,12 @@ from src.achievements import check_achievements, get_all_achievements, Achieveme
 from src.archetypes import get_archetype, get_all_archetypes, Archetype
 from src.profile import load_profile, save_profile, PlayerProfile
 from src.map_viz import generate_map_svg
+from src.coaching import (
+    generate_coaching_summary,
+    get_guide_message_for_room,
+    get_room_image,
+    GUIDE_OBSERVATIONS,
+)
 
 # === CONSTANTS ===
 SAVE_DIR = Path.home() / ".labyrinth_of_the_mind"
@@ -598,14 +604,27 @@ elif st.session_state.get("game_phase") == "playing":
                 st.markdown(f'<div class="new-unlock">{arch.icon} Unlocked: {arch.name}</div>', unsafe_allow_html=True)
             for ach in new_achs:
                 st.markdown(f'<div class="new-unlock">🏆 {ach.icon} {ach.name}</div>', unsafe_allow_html=True)
-
-        # Personality
-        insights = get_personality_summary(state)
-        if insights:
-            st.markdown("### 🔮 Personality Insights")
-            for ins in insights:
-                st.markdown(f'<div class="insight-card"><strong>{ins["trait"]}</strong><br><em>{ins["insight"]}</em></div>', unsafe_allow_html=True)
-
+        # === COACHING REPORT ===
+        st.markdown("---")
+        st.markdown("## 🧭 Your Personal Coaching Report")
+        
+        # Generate comprehensive coaching summary
+        coaching = generate_coaching_summary(state)
+        
+        # Summary paragraphs
+        for para in coaching["summary_paragraphs"]:
+            st.markdown(para)
+            st.markdown("")
+        
+        # Action Items
+        if coaching["action_items"]:
+            st.markdown("### 📋 Your Action Items")
+            st.markdown("*Based on the choices you made, here are some practices to consider:*")
+            for item in coaching["action_items"]:
+                with st.expander(f"🎯 {item['title']}"):
+                    st.markdown(f"**Action:** {item['action']}")
+                    st.markdown(f"**Question to explore:** *{item['question']}*")
+        
         # Reflections
         if state.reflections:
             with st.expander("📝 Your Reflections"):
@@ -652,10 +671,24 @@ elif st.session_state.get("game_phase") == "playing":
             st.session_state.message = None
 
         st.markdown(f"# {theme['emoji']} Labyrinth of the Mind")
+        
+        # Display room image if available
+        room_image = get_room_image(state.current_room_id)
+        if room_image:
+            try:
+                st.image(room_image, use_container_width=True)
+            except Exception:
+                pass  # Image not found, continue without it
+        
         st.markdown(f'<div class="room-card animate-in"><h2>{theme["emoji"]} {current_room.name}</h2><p>{current_room.description}</p></div>', unsafe_allow_html=True)
 
         if current_room.literary_quote:
             st.markdown(f'<div class="literary-quote">"{current_room.literary_quote}"<div class="quote-source">— {current_room.literary_source}</div></div>', unsafe_allow_html=True)
+
+        # Display Guide message if available
+        guide_msg = get_guide_message_for_room(state.current_room_id, state)
+        if guide_msg:
+            st.markdown(f'<div style="background: rgba(102, 126, 234, 0.15); border-left: 3px solid #667eea; padding: 1rem; margin: 1rem 0; border-radius: 0 10px 10px 0; font-style: italic;">{guide_msg}</div>', unsafe_allow_html=True)
 
         st.markdown("---")
         st.markdown("### What do you do?")
